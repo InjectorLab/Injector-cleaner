@@ -89,7 +89,6 @@ bool InjectorManager::readNextPinFromPattern_(uint8_t& outPin) {
         return false;
     }
 
-    // Конец цикла по паттерну?
     if (patternIndex_ >= patternLen_) {
         patternIndex_ = 0;
         if (repeatCount_ > 0) {

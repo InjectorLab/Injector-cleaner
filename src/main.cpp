@@ -9,16 +9,16 @@
 #include "timer/TimerManager.h"  
 
 // ================== USER CONFIG ==================
-static const char* WIFI_SSID = "SpectrumSetup-B9";
-static const char* WIFI_PASS = "voyagefriend940";
+static const char* WIFI_SSID = "Change-Me";
+static const char* WIFI_PASS = "Change-Me";
 
-static const uint8_t PIN_PUMP_RELAY   = 25;
-static const uint8_t PIN_PRESSURE_ADC = 34;
+static const uint8_t PIN_PUMP_RELAY   = 14;
+static const uint8_t PIN_PRESSURE_ADC = 12;
 
-static const uint8_t PIN_INJ_1 = 13;
-static const uint8_t PIN_INJ_2 = 14;
-static const uint8_t PIN_INJ_3 = 27;
-static const uint8_t PIN_INJ_4 = 26;
+static const uint8_t PIN_INJ_1 = 11;
+static const uint8_t PIN_INJ_2 = 10;
+static const uint8_t PIN_INJ_3 = 13;
+static const uint8_t PIN_INJ_4 = 46;
 
 static const uint16_t DEFAULT_DELAY_MS = 10;
 static const uint16_t DEFAULT_PULSE_MS = 10;
