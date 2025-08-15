@@ -1,14 +1,16 @@
 #include <Arduino.h>
 
+#include "lilygo/RelayBus.h"
+
 #include "net/WiFiConnector.h"
 
 #include "sensors/PressureSensorManager.h"
 #include "sensors/adapters/PinAdcPressureSensorAdapter.h"
 
 #include "pump/PumpManager.h"
-#include "pump/adapters/PinRelayPumpAdapter.h"
+#include "pump/adapters/RelayBusPumpAdapter.h"
 
-#include "injector/adapters/PinInjectorAdapter.h"
+#include "injector/adapters/RelayBusInjectorAdapter.h"
 #include "injector/InjectorManager.h"
 
 #include "net/WebSocketManager.h"
@@ -21,17 +23,19 @@ static const uint16_t DEFAULT_DELAY_MS = 10;
 static const uint16_t DEFAULT_PULSE_MS = 10;
 // =================================================
 
+RelayBus relayBus;
+
 // WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
 PinAdcPressureSensorAdapter pressureAdapter(10);
 PressureSensorManager  pressure(pressureAdapter);
 
-PinRelayPumpAdapter         pumpAdapter(9, true);
+RelayBusPumpAdapter pumpAdapter(relayBus, 6, true);
 PumpManager            pump(pumpAdapter, pressure);
 
-PinInjectorAdapter          inj1Adapter(11, true);
-PinInjectorAdapter          inj2Adapter(12, true);
-PinInjectorAdapter          inj3Adapter(13, true);
-PinInjectorAdapter          inj4Adapter(14, true);
+RelayBusInjectorAdapter inj1(relayBus, 2, true);
+RelayBusInjectorAdapter inj2(relayBus, 3, true);
+RelayBusInjectorAdapter inj3(relayBus, 4, true);
+RelayBusInjectorAdapter inj4(relayBus, 5, true);
 InjectorManager        injector(DEFAULT_DELAY_MS, DEFAULT_PULSE_MS);
 
 TimerManager           timer(injector);
@@ -49,14 +53,14 @@ void setup() {
     Serial.begin(115200);
     delay(50);
 
-    injector.addInjector(inj1Adapter);
-    injector.addInjector(inj2Adapter);
-    injector.addInjector(inj3Adapter);
-    injector.addInjector(inj4Adapter);
-
-    timer.start(10000);
+    injector.addInjector(inj1);
+    injector.addInjector(inj2);
+    injector.addInjector(inj3);
+    injector.addInjector(inj4);
 
     for (auto* component : components) component->setup();
+
+    timer.start(10000);
 }
 
 void loop() {
