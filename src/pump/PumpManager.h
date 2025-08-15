@@ -2,10 +2,11 @@
 #include <Arduino.h>
 #include "../common/LifeCycleHandler.h"
 #include "../sensors/PressureSensorManager.h"
+#include "./adapters/IPumpAdapter.h"
 
 class PumpManager final : public LifeCycleHandler {
 public:
-    PumpManager(uint8_t relayPin, PressureSensorManager& pressureSensor);
+    PumpManager(IPumpAdapter& pumpAdapter, PressureSensorManager& pressureSensor);
 
     void setup() override;
     void loop() override;
@@ -13,17 +14,18 @@ public:
     void applySettings(bool autoEnable, int cutoffRaw);
     bool isEnabled() const;
     int  getCutoffPressureRaw() const;
-    bool isRelayOn() const;
+    bool isPumpOn() const;
 
 private:
-    const uint8_t relayPin_;
+    IPumpAdapter& pumpAdapter_;
     PressureSensorManager& pressureSensor_;
 
     bool enable_ = false;
-    bool relayOn_     = false;
+    bool outputOn_ = false;
     int  cutoffRaw_   = 3800;
     int  hysteresisRaw_ = 100;
 
-    void writeRelay_(bool on);
+    void writePower_(uint8_t percent);
+    void writeOff_();
     void evaluateAutoControl_();
 };

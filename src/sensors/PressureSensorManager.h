@@ -1,10 +1,11 @@
 #pragma once
 #include <Arduino.h>
 #include "../common/LifeCycleHandler.h"
+#include "./adapters/IPressureSensorAdapter.h"
 
 class PressureSensorManager final : public LifeCycleHandler {
 public:
-    explicit PressureSensorManager(uint8_t adcPin);
+    explicit PressureSensorManager(IPressureSensorAdapter& adapter);
 
     void setup() override;
     void loop() override;
@@ -12,7 +13,8 @@ public:
     uint16_t getCurrentPressureRaw() const;
 
 private:
-    const uint8_t adcPin_;
+    IPressureSensorAdapter& adapter_;
+
     static constexpr uint8_t windowSize_ = 10;
     uint16_t ring_[windowSize_] = {0};
     uint8_t ringIndex_ = 0;

@@ -5,9 +5,9 @@ InjectorManager::InjectorManager(uint16_t defaultDelayMs, uint16_t defaultPulseM
 
 void InjectorManager::setup() {
     for (uint8_t i = 0; i < injectorCount_; ++i) {
-        pinMode(injectorPins_[i], OUTPUT);
-        digitalWrite(injectorPins_[i], LOW);
+        if (injectors_[i]) injectors_[i]->setup();
     }
+    setAllOff_();
 }
 
 void InjectorManager::loop() {
@@ -22,7 +22,9 @@ void InjectorManager::loop() {
 
     switch (phase_) {
         case PULSE_HIGH: {
-            digitalWrite(activePin_, LOW);
+            if (activeIndex_ >= 0 && activeIndex_ < (int8_t)injectorCount_ && injectors_[activeIndex_]) {
+                injectors_[activeIndex_]->off();
+            }
             phase_ = GAP_DELAY;
             nextPhaseAtMs_ = now + delayMs_;
             break;
@@ -30,13 +32,15 @@ void InjectorManager::loop() {
         case GAP_DELAY:
         case IDLE:
         default: {
-            uint8_t nextPin = 0;
-            if (!readNextPinFromPattern_(nextPin)) {
+            uint8_t nextIdx = 0;
+            if (!readNextFromPattern_(nextIdx)) {
                 stopPattern();
                 return;
             }
-            activePin_ = nextPin;
-            digitalWrite(activePin_, HIGH);
+            activeIndex_ = nextIdx;
+            if (injectors_[activeIndex_]) {
+                injectors_[activeIndex_]->on();
+            }
             phase_ = PULSE_HIGH;
             nextPhaseAtMs_ = now + pulseMs_;
             break;
@@ -44,9 +48,9 @@ void InjectorManager::loop() {
     }
 }
 
-void InjectorManager::addInjectorPin(uint8_t pin) {
+void InjectorManager::addInjector(IInjectorAdapter& adapter) {
     if (injectorCount_ < kMaxInjectors) {
-        injectorPins_[injectorCount_++] = pin;
+        injectors_[injectorCount_++] = &adapter;
     }
 }
 
@@ -68,9 +72,10 @@ void InjectorManager::startPattern(const uint8_t* pattern, uint8_t length, long 
 }
 
 void InjectorManager::stopPattern() {
-    setAllLow_();
+    setAllOff_();
     running_ = false;
     phase_ = IDLE;
+    activeIndex_ = -1;
 }
 
 bool InjectorManager::isRunning() const { return running_; }
@@ -78,14 +83,14 @@ uint16_t InjectorManager::getDelayMs() const { return delayMs_; }
 uint16_t InjectorManager::getPulseMs() const { return pulseMs_; }
 uint8_t  InjectorManager::getInjectorCount() const { return injectorCount_; }
 
-void InjectorManager::setAllLow_() {
+void InjectorManager::setAllOff_() {
     for (uint8_t i = 0; i < injectorCount_; ++i) {
-        digitalWrite(injectorPins_[i], LOW);
+        if (injectors_[i]) injectors_[i]->off();
     }
 }
 
-bool InjectorManager::readNextPinFromPattern_(uint8_t& outPin) {
-    if (patternLen_ == 0) {
+bool InjectorManager::readNextFromPattern_(uint8_t& outIndex) {
+    if (patternLen_ == 0 || injectorCount_ == 0) {
         return false;
     }
 
@@ -101,8 +106,9 @@ bool InjectorManager::readNextPinFromPattern_(uint8_t& outPin) {
 
     const uint8_t logicalIndex = pattern_[patternIndex_++];
     if (logicalIndex == 0 || logicalIndex > injectorCount_) {
-        return readNextPinFromPattern_(outPin);
+        return readNextFromPattern_(outIndex);
     }
-    outPin = injectorPins_[logicalIndex - 1];
+
+    outIndex = logicalIndex - 1;
     return true;
 }

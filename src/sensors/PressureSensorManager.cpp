@@ -1,12 +1,12 @@
 #include "PressureSensorManager.h"
 
-PressureSensorManager::PressureSensorManager(uint8_t adcPin)
-: adcPin_(adcPin) {}
+PressureSensorManager::PressureSensorManager(IPressureSensorAdapter& adapter)
+: adapter_(adapter) {}
 
 void PressureSensorManager::setup() {
-    pinMode(adcPin_, INPUT);
+    adapter_.setup();
 
-    uint16_t firstValue = static_cast<uint16_t>(analogRead(adcPin_));
+    uint16_t firstValue = static_cast<uint16_t>(adapter_.readRaw());
     for (uint8_t i = 0; i < windowSize_; ++i) {
         ring_[i] = firstValue;
         sum_ += firstValue;
@@ -27,7 +27,7 @@ uint16_t PressureSensorManager::getCurrentPressureRaw() const {
 }
 
 void PressureSensorManager::sampleOnce_() {
-    const uint16_t raw = static_cast<uint16_t>(analogRead(adcPin_));
+    const uint16_t raw = adapter_.readRaw();
     sum_ -= ring_[ringIndex_];
     ring_[ringIndex_] = raw;
     sum_ += raw;

@@ -128,7 +128,7 @@ void WebSocketManager::handleCommandJson_(AsyncWebSocketClient* client, const ch
 void WebSocketManager::sendPumpStatusTo_(AsyncWebSocketClient* client) {
     JsonDocument doc;
     doc["type"]     = "pump.status";
-    doc["on"]       = pump_.isRelayOn();
+    doc["on"]       = pump_.isEnabled();
     doc["cutoff"]   = pump_.getCutoffPressureRaw();
     doc["pressure"] = pressure_.getCurrentPressureRaw();
 
@@ -140,7 +140,7 @@ void WebSocketManager::sendPumpStatusTo_(AsyncWebSocketClient* client) {
 void WebSocketManager::broadcastPumpStatus_() {
     JsonDocument doc;
     doc["type"]     = "pump.status";
-    doc["on"]       = pump_.isRelayOn();
+    doc["on"]       = pump_.isEnabled();
     doc["cutoff"]   = pump_.getCutoffPressureRaw();
     doc["pressure"] = pressure_.getCurrentPressureRaw();
 

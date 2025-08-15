@@ -1,11 +1,11 @@
 #include "PumpManager.h"
 
-PumpManager::PumpManager(uint8_t relayPin, PressureSensorManager& pressureSensor)
-: relayPin_(relayPin), pressureSensor_(pressureSensor) {}
+PumpManager::PumpManager(IPumpAdapter& pumpAdapter, PressureSensorManager& pressureSensor)
+: pumpAdapter_(pumpAdapter), pressureSensor_(pressureSensor) {}
 
 void PumpManager::setup() {
-    pinMode(relayPin_, OUTPUT);
-    writeRelay_(false);
+    pumpAdapter_.setup();
+    writeOff_();
 }
 
 void PumpManager::loop() {
@@ -24,28 +24,34 @@ void PumpManager::applySettings(bool enable, int cutoffRaw) {
 
 bool PumpManager::isEnabled() const { return enable_; }
 int  PumpManager::getCutoffPressureRaw() const { return cutoffRaw_; }
-bool PumpManager::isRelayOn() const { return relayOn_; }
+bool PumpManager::isPumpOn() const { return outputOn_; }
 
-void PumpManager::writeRelay_(bool on) {
-    digitalWrite(relayPin_, on ? HIGH : LOW);
-    relayOn_ = on;
+void PumpManager::writePower_(uint8_t percent) {
+    pumpAdapter_.setPowerPercent(percent);
+    const bool newOn = (percent > 0);
+    if (newOn != outputOn_) {
+        outputOn_ = newOn;
+    }
+}
+
+void PumpManager::writeOff_() {
+    pumpAdapter_.off();
+    if (outputOn_) {
+        outputOn_ = false;
+    }
 }
 
 void PumpManager::evaluateAutoControl_() {
     const uint16_t pressure = pressureSensor_.getCurrentPressureRaw();
 
-    bool newRelay = relayOn_;
     if (!enable_) {
-        newRelay = false;
-    } else {
-        if (pressure >= cutoffRaw_) {
-            newRelay = false;
-        } else if (pressure < (cutoffRaw_ - hysteresisRaw_)) {
-            newRelay = true;
-        }
+        writeOff_();
+        return;
     }
 
-    if (newRelay != relayOn_) {
-        writeRelay_(newRelay);
+    if (pressure >= cutoffRaw_) {
+        writeOff_();
+    } else if (pressure < (cutoffRaw_ - hysteresisRaw_)) {
+        writePower_(100);
     }
 }
