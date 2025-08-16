@@ -40,9 +40,9 @@ private:
     long     repeatCount_ = 0;
     long     repeatLeft_ = 0;
 
-    int8_t patternIndex_ = 0;
-    int8_t activeIndex_ = -1;
-    int8_t nextPhaseAtMs_ = 0;
+    uint8_t  patternIndex_ = 0;
+    int8_t   activeIndex_ = -1;
+    uint32_t nextPhaseAtMs_ = 0;
 
     void setAllOff_();
     bool readNextFromPattern_(uint8_t& outIndex);

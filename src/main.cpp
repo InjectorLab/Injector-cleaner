@@ -19,8 +19,8 @@
 
 // ================== USER CONFIG ==================
 
-static const uint16_t DEFAULT_DELAY_MS = 10;
-static const uint16_t DEFAULT_PULSE_MS = 10;
+static const uint16_t DEFAULT_DELAY_MS = 100;
+static const uint16_t DEFAULT_PULSE_MS = 100;
 // =================================================
 
 RelayBus relayBus;
@@ -51,6 +51,7 @@ LifeCycleHandler* components[] = {
 
 void setup() {
     Serial.begin(115200);
+
     delay(50);
 
     injector.addInjector(inj1);

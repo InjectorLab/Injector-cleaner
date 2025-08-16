@@ -10,7 +10,9 @@ void TimerManager::loop() {
 
     const uint32_t now = millis();
     const uint32_t endAt = startedAtMs_ + durationMs_;
+
     if ((int32_t)(now - endAt) >= 0) {
+        Serial.println("[TimerManager] Time expired → stop()");
         stop();
     }
 }
