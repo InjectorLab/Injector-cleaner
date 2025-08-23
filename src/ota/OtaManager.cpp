@@ -28,6 +28,6 @@ void OtaManager::setup() {
     Serial.printf("[OTA] Ready. Hostname: %s\n", hostname_ ? hostname_ : "(none)");
 }
 
-void OtaManager::loop() {
+void OtaManager::loop(uint32_t cycleStartMillis) {
     ArduinoOTA.handle();
 }

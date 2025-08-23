@@ -10,13 +10,12 @@ void InjectorManager::setup() {
     setAllOff_();
 }
 
-void InjectorManager::loop() {
+void InjectorManager::loop(uint32_t cycleStartMillis) {
     if (!running_) {
         return;
     }
 
-    const uint32_t now = millis();
-    if (now < nextPhaseAtMs_) {
+    if (cycleStartMillis < nextPhaseAtMs_) {
         return;
     }
 
@@ -26,7 +25,7 @@ void InjectorManager::loop() {
                 injectors_[activeIndex_]->off();
             }
             phase_ = GAP_DELAY;
-            nextPhaseAtMs_ = now + delayMs_;
+            nextPhaseAtMs_ = cycleStartMillis + delayMs_;
             break;
         }
         case GAP_DELAY:
@@ -42,7 +41,7 @@ void InjectorManager::loop() {
                 injectors_[activeIndex_]->on();
             }
             phase_ = PULSE_HIGH;
-            nextPhaseAtMs_ = now + pulseMs_;
+            nextPhaseAtMs_ = cycleStartMillis + pulseMs_;
             break;
         }
     }

@@ -9,8 +9,8 @@ void WiFiConnector::setup() {
     startConnectIfNeeded_();
 }
 
-void WiFiConnector::loop() {
-    if (!isConnected() && millis() >= nextReconnectAttemptMs_) {
+void WiFiConnector::loop(uint32_t cycleStartMillis) {
+    if (!isConnected() && cycleStartMillis >= nextReconnectAttemptMs_) {
         startConnectIfNeeded_();
     }
 }

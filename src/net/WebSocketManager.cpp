@@ -21,16 +21,14 @@ void WebSocketManager::setup() {
     Serial.println("[HTTP] Server started on :80, WS at /ws");
 }
 
-void WebSocketManager::loop() {
-    const uint32_t now = millis();
-
-    if (now >= nextPumpTelemetryAtMs_) {
-        nextPumpTelemetryAtMs_ = now + pumpTelemetryPeriodMs_;
+void WebSocketManager::loop(uint32_t cycleStartMillis) {
+    if (cycleStartMillis >= nextPumpTelemetryAtMs_) {
+        nextPumpTelemetryAtMs_ = cycleStartMillis + pumpTelemetryPeriodMs_;
         broadcastPumpStatus_();
     }
 
-    if (timer_.isRunning() && now >= nextTimerTelemetryAtMs_) {
-        nextTimerTelemetryAtMs_ = now + timerTelemetryPeriodMs_;
+    if (timer_.isRunning() && cycleStartMillis >= nextTimerTelemetryAtMs_) {
+        nextTimerTelemetryAtMs_ = cycleStartMillis + timerTelemetryPeriodMs_;
         broadcastTimerStatus_();
     }
 

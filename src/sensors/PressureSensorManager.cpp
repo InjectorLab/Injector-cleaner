@@ -14,10 +14,9 @@ void PressureSensorManager::setup() {
     current_ = firstValue;
 }
 
-void PressureSensorManager::loop() {
-    const uint32_t now = millis();
-    if (now >= nextSampleAtMs_) {
-        nextSampleAtMs_ = now + samplePeriodMs_;
+void PressureSensorManager::loop(uint32_t cycleStartMillis) {
+    if (cycleStartMillis >= nextSampleAtMs_) {
+        nextSampleAtMs_ = cycleStartMillis + samplePeriodMs_;
         sampleOnce_();
     }
 }

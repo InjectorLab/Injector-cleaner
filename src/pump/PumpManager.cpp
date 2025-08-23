@@ -8,7 +8,7 @@ void PumpManager::setup() {
     writeOff_();
 }
 
-void PumpManager::loop() {
+void PumpManager::loop(uint32_t cycleStartMillis) {
     evaluateAutoControl_();
 }
 

@@ -8,7 +8,7 @@ public:
     WiFiConnector(const char* ssid, const char* pass);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
     bool isConnected() const;
     IPAddress getIp() const;

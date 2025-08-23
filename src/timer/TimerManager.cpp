@@ -5,13 +5,14 @@ TimerManager::TimerManager(InjectorManager& injector)
 
 void TimerManager::setup() {}
 
-void TimerManager::loop() {
-    if (!running_) return;
+void TimerManager::loop(uint32_t cycleStartMillis) {
+    if (!running_) {
+        return;
+    }
 
-    const uint32_t now = millis();
     const uint32_t endAt = startedAtMs_ + durationMs_;
 
-    if ((int32_t)(now - endAt) >= 0) {
+    if ((int32_t)(cycleStartMillis - endAt) >= 0) {
         stop();
     }
 }

@@ -12,7 +12,7 @@ public:
     InjectorManager(uint16_t defaultDelayMs, uint16_t defaultPulseMs);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
     void addInjector(IInjectorAdapter& adapter);
 

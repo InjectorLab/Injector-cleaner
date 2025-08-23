@@ -16,7 +16,7 @@ public:
                      TimerManager& timer);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
 private:
     AsyncWebServer httpServer_{80};

@@ -19,6 +19,8 @@
 
 #include "ota/OtaManager.h"
 
+#include "monitor/MonitoringManager.h"
+
 #include "secret.h"
 
 // ================== USER CONFIG ==================
@@ -46,8 +48,10 @@ WebSocketManager       websocket(pressure, pump, injector, timer);
 
 OtaManager              ota("injector");
 
+MonitoringManager       monitoringManager(5000);
+
 LifeCycleHandler* components[] = {
-    &wifi, &ota, &pressure, &pump, &injector, &timer, &websocket
+    &wifi, &ota, &pressure, &pump, &injector, &timer, &websocket, &monitoringManager
 };
 
 void setup() {
@@ -64,5 +68,6 @@ void setup() {
 }
 
 void loop() {
-    for (auto* component : components) component->loop();
+    const uint32_t now = millis();
+    for (auto* component : components) component->loop(now);
 }

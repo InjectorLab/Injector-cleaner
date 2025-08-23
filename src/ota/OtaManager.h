@@ -9,7 +9,7 @@ public:
     : hostname_(hostname) {}
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 private:
     const char*          hostname_ = nullptr;
 };

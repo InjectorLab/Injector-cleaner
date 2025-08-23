@@ -10,7 +10,7 @@ public:
     PumpManager(IPumpAdapter& pumpAdapter, PressureSensorManager& pressureSensor);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
     void applySettings(bool autoEnable, int cutoffRaw, int maxPower = 100);
     

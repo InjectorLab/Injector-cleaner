@@ -8,7 +8,7 @@ public:
     explicit PressureSensorManager(IPressureSensorAdapter& adapter);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
     uint16_t getCurrentPressureRaw() const;
 

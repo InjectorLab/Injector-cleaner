@@ -9,7 +9,7 @@ public:
     explicit TimerManager(InjectorManager& injector);
 
     void setup() override;
-    void loop() override;
+    void loop(uint32_t cycleStartMillis) override;
 
     void start(uint32_t durationMs);
     void stop();
