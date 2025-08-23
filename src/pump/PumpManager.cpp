@@ -20,6 +20,7 @@ void PumpManager::applySettings(bool enable, int cutoffRaw) {
         cutoffRaw = 1;
     }
     cutoffRaw_ = cutoffRaw;
+    bumpVersion();
 }
 
 bool PumpManager::isEnabled() const { return enable_; }

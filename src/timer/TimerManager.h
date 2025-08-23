@@ -1,9 +1,10 @@
 #pragma once
 #include <Arduino.h>
 #include "../common/LifeCycleHandler.h"
+#include "../common/StateVersionTracker.h"
 #include "../injector/InjectorManager.h"
 
-class TimerManager final : public LifeCycleHandler {
+class TimerManager final : public LifeCycleHandler, public StateVersionTracker  {
 public:
     explicit TimerManager(InjectorManager& injector);
 

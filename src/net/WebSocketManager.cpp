@@ -33,6 +33,18 @@ void WebSocketManager::loop() {
         nextTimerTelemetryAtMs_ = now + timerTelemetryPeriodMs_;
         broadcastTimerStatus_();
     }
+
+    uint32_t currentTimerRev = timer_.getVersion();
+    if (currentTimerRev != lastTiemrRev_) {
+        lastTiemrRev_ = currentTimerRev;
+        broadcastTimerStatus_();
+    }
+
+    uint32_t currentInjectorRev = injector_.getVersion();
+    if (currentInjectorRev != lastInjectorRev_) {
+        lastInjectorRev_ = currentInjectorRev;
+        broadcastInjectorStatus_();
+    }
 }
 
 void WebSocketManager::onWsEvent_(AsyncWebSocket* server, AsyncWebSocketClient* client,
@@ -119,6 +131,21 @@ void WebSocketManager::handleCommandJson_(AsyncWebSocketClient* client, const ch
         timer_.stop();
         broadcastTimerStatus_();
         broadcastInjectorStatus_();
+        return;
+    }
+
+    if (strcmp(type, "pump.status") == 0) {
+        sendPumpStatusTo_(client);
+        return;
+    }
+
+    if (strcmp(type, "inj.status") == 0) {
+        sendInjectorStatusTo_(client);
+        return;
+    }
+
+    if (strcmp(type, "timer.status") == 0) {
+        sendTimerStatusTo_(client);
         return;
     }
 

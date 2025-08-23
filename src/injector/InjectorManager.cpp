@@ -23,7 +23,6 @@ void InjectorManager::loop() {
     switch (phase_) {
         case PULSE_HIGH: {
             if (activeIndex_ >= 0 && activeIndex_ < (int8_t)injectorCount_ && injectors_[activeIndex_]) {
-                Serial.printf("[InjectorManager] Deactivating injector #%d\n", activeIndex_);
                 injectors_[activeIndex_]->off();
             }
             phase_ = GAP_DELAY;
@@ -40,7 +39,6 @@ void InjectorManager::loop() {
             }
             activeIndex_ = nextIdx;
             if (injectors_[activeIndex_]) {
-                Serial.printf("[InjectorManager] Activating injector #%d\n", activeIndex_);
                 injectors_[activeIndex_]->on();
             }
             phase_ = PULSE_HIGH;
@@ -59,12 +57,12 @@ void InjectorManager::addInjector(IInjectorAdapter& adapter) {
 void InjectorManager::setTimings(uint16_t delayMs, uint16_t pulseMs) {
     if (delayMs > 0) delayMs_ = delayMs;
     if (pulseMs > 0) pulseMs_ = pulseMs;
+    bumpVersion();
 }
 
 void InjectorManager::startPattern(const uint8_t* pattern, uint8_t length, long repeatCount) {
     patternLen_ = (length > kMaxPattern) ? kMaxPattern : length;
     for (uint8_t i = 0; i < patternLen_; ++i) {
-        Serial.printf("[InjectorManager] Pattern[%u] = %u\n", i, pattern_[i]);
         pattern_[i] = pattern[i];
     }
 
@@ -73,16 +71,15 @@ void InjectorManager::startPattern(const uint8_t* pattern, uint8_t length, long 
     patternIndex_ = 0;
     phase_ = IDLE;
     running_ = true;
+    bumpVersion();
     nextPhaseAtMs_ = millis();
-
-    Serial.printf("[InjectorManager] startPattern(len=%u, repeatCount=%ld)\n", patternLen_, repeatCount_);
 }
 
 void InjectorManager::stopPattern() {
-    setAllOff_();
     running_ = false;
     phase_ = IDLE;
     activeIndex_ = -1;
+    bumpVersion();
 }
 
 bool InjectorManager::isRunning() const { return running_; }

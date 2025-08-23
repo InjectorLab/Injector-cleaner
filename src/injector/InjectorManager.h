@@ -1,9 +1,10 @@
 #pragma once
 #include <Arduino.h>
 #include "../common/LifeCycleHandler.h"
+#include "../common/StateVersionTracker.h"
 #include "./adapters/IInjectorAdapter.h"
 
-class InjectorManager final : public LifeCycleHandler {
+class InjectorManager final : public LifeCycleHandler, public StateVersionTracker {
 public:
     static constexpr uint8_t kMaxInjectors = 8;
     static constexpr uint8_t kMaxPattern   = 32;

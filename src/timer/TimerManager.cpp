@@ -12,7 +12,6 @@ void TimerManager::loop() {
     const uint32_t endAt = startedAtMs_ + durationMs_;
 
     if ((int32_t)(now - endAt) >= 0) {
-        Serial.println("[TimerManager] Time expired → stop()");
         stop();
     }
 }
@@ -23,6 +22,8 @@ void TimerManager::start(uint32_t durationMs) {
     running_     = true;
 
     startInjectorsInfinite_();
+
+    bumpVersion();
 }
 
 void TimerManager::stop() {
@@ -32,6 +33,8 @@ void TimerManager::stop() {
     }
     running_ = false;
     stopInjectors_();
+
+    bumpVersion();
 }
 
 bool TimerManager::isRunning() const {

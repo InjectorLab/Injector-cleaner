@@ -8,7 +8,7 @@
 #include "sensors/adapters/PinAdcPressureSensorAdapter.h"
 
 #include "pump/PumpManager.h"
-#include "pump/adapters/RelayBusPumpAdapter.h"
+#include "pump/adapters/PinRelayPumpAdapter.h"
 
 #include "injector/adapters/RelayBusInjectorAdapter.h"
 #include "injector/InjectorManager.h"
@@ -17,36 +17,37 @@
 #include "common/LifeCycleHandler.h"
 #include "timer/TimerManager.h"  
 
+#include "ota/OtaManager.h"
+
 // ================== USER CONFIG ==================
 
 static const uint16_t DEFAULT_DELAY_MS = 100;
 static const uint16_t DEFAULT_PULSE_MS = 100;
 // =================================================
 
-RelayBus relayBus;
-
-// WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
+WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
 PinAdcPressureSensorAdapter pressureAdapter(10);
 PressureSensorManager  pressure(pressureAdapter);
 
-RelayBusPumpAdapter pumpAdapter(relayBus, 6, true);
+PinRelayPumpAdapter pumpAdapter(14, false);
+
 PumpManager            pump(pumpAdapter, pressure);
 
+RelayBus relayBus;
 RelayBusInjectorAdapter inj1(relayBus, 2, true);
 RelayBusInjectorAdapter inj2(relayBus, 3, true);
 RelayBusInjectorAdapter inj3(relayBus, 4, true);
 RelayBusInjectorAdapter inj4(relayBus, 5, true);
+
 InjectorManager        injector(DEFAULT_DELAY_MS, DEFAULT_PULSE_MS);
 
 TimerManager           timer(injector);
-// WebSocketManager       websocket(pressure, pump, injector, timer);
+WebSocketManager       websocket(pressure, pump, injector, timer);
 
-// LifeCycleHandler* components[] = {
-//     &wifi, &pressure, &pump, &injector, &timer, &websocket
-// };
+OtaManager              ota("injector");
 
 LifeCycleHandler* components[] = {
-    &pressure, &pump, &injector, &timer
+    &wifi, &ota, &pressure, &pump, &injector, &timer, &websocket
 };
 
 void setup() {
@@ -60,8 +61,6 @@ void setup() {
     injector.addInjector(inj4);
 
     for (auto* component : components) component->setup();
-
-    timer.start(10000);
 }
 
 void loop() {

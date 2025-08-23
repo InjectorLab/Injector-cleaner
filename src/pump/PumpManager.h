@@ -1,10 +1,11 @@
 #pragma once
 #include <Arduino.h>
 #include "../common/LifeCycleHandler.h"
+#include "../common/StateVersionTracker.h"
 #include "../sensors/PressureSensorManager.h"
 #include "./adapters/IPumpAdapter.h"
 
-class PumpManager final : public LifeCycleHandler {
+class PumpManager final : public LifeCycleHandler, public StateVersionTracker {
 public:
     PumpManager(IPumpAdapter& pumpAdapter, PressureSensorManager& pressureSensor);
 
