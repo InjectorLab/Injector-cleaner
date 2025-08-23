@@ -26,13 +26,13 @@ void OpenDrainPumpAdapter::off() {
 
 void OpenDrainPumpAdapter::loop() {
     if (dutyPercent_ == 0) {
-        digitalWrite(pin_, HIGH);
-        stateLow_ = false;
+        digitalWrite(pin_, LOW);
+        stateLow_ = true;
         return;
     }
     if (dutyPercent_ == 100) {
-        digitalWrite(pin_, LOW);
-        stateLow_ = true;
+        digitalWrite(pin_, HIGH);
+        stateLow_ = false;
         return;
     }
 
@@ -44,7 +44,7 @@ void OpenDrainPumpAdapter::loop() {
         stateLow_ = false;
     }
 
-    int onTime = (PERIOD_MS * dutyPercent_) / 100;
+    int onTime = (PERIOD_MS * (100 - dutyPercent_)) / 100;
 
     if (elapsed < onTime) {
         digitalWrite(pin_, LOW);
