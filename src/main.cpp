@@ -19,12 +19,12 @@
 
 #include "ota/OtaManager.h"
 
-// ================== USER CONFIG ==================
+#include "secret.h"
 
+// ================== USER CONFIG ==================
 static const uint16_t DEFAULT_DELAY_MS = 100;
 static const uint16_t DEFAULT_PULSE_MS = 100;
 // =================================================
-
 WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
 PinAdcPressureSensorAdapter pressureAdapter(10);
 PressureSensorManager  pressure(pressureAdapter);
