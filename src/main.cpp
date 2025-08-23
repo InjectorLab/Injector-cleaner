@@ -48,10 +48,10 @@ WebSocketManager       websocket(pressure, pump, injector, timer);
 
 OtaManager              ota("injector");
 
-MonitoringManager       monitoringManager(5000);
+// MonitoringManager       monitoringManager(5000);
 
 LifeCycleHandler* components[] = {
-    &wifi, &ota, &pressure, &pump, &injector, &timer, &websocket, &monitoringManager
+    &wifi, &ota, &pressure, &pump, &injector, &timer, &websocket
 };
 
 void setup() {
