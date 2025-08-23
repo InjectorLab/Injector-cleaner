@@ -5,10 +5,10 @@
 #include "net/WiFiConnector.h"
 
 #include "sensors/PressureSensorManager.h"
-#include "sensors/adapters/PinAdcPressureSensorAdapter.h"
+#include "sensors/adapters/StubPressureSensorAdapter.h"
 
 #include "pump/PumpManager.h"
-#include "pump/adapters/LedcPumpAdapter.h"
+#include "pump/adapters/OpenDrainPumpAdapter.h"
 
 #include "injector/adapters/RelayBusInjectorAdapter.h"
 #include "injector/InjectorManager.h"
@@ -28,10 +28,10 @@ static const uint16_t DEFAULT_DELAY_MS = 100;
 static const uint16_t DEFAULT_PULSE_MS = 100;
 // =================================================
 WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
-PinAdcPressureSensorAdapter pressureAdapter(10);
+StubPressureSensorAdapter pressureAdapter(10);
 PressureSensorManager  pressure(pressureAdapter);
 
-LedcPumpAdapter pumpAdapter(14, false);
+OpenDrainPumpAdapter pumpAdapter(2);
 
 PumpManager            pump(pumpAdapter, pressure);
 
@@ -68,6 +68,8 @@ void setup() {
 }
 
 void loop() {
+    pumpAdapter.loop();
+
     const uint32_t now = millis();
     for (auto* component : components) component->loop(now);
 }
