@@ -8,7 +8,7 @@
 #include "sensors/adapters/PinAdcPressureSensorAdapter.h"
 
 #include "pump/PumpManager.h"
-#include "pump/adapters/PinRelayPumpAdapter.h"
+#include "pump/adapters/LedcPumpAdapter.h"
 
 #include "injector/adapters/RelayBusInjectorAdapter.h"
 #include "injector/InjectorManager.h"
@@ -29,7 +29,7 @@ WiFiConnector          wifi(WIFI_SSID, WIFI_PASS);
 PinAdcPressureSensorAdapter pressureAdapter(10);
 PressureSensorManager  pressure(pressureAdapter);
 
-PinRelayPumpAdapter pumpAdapter(14, false);
+LedcPumpAdapter pumpAdapter(14, false);
 
 PumpManager            pump(pumpAdapter, pressure);
 

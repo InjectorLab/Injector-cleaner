@@ -87,8 +87,9 @@ void WebSocketManager::handleCommandJson_(AsyncWebSocketClient* client, const ch
 
     if (strcmp(type, "pump.set") == 0) {
         const bool on = doc["on"] | true;
-        const int  cutoff = doc["cutoff"] | pump_.getCutoffPressureRaw();
-        pump_.applySettings(on, cutoff);
+        const int cutoff = doc["cutoff"] | pump_.getCutoffPressureRaw();
+        const int max = doc["max"] | pump_.getMaxPower();
+        pump_.applySettings(on, cutoff, max);
         broadcastPumpStatus_();
         return;
     }
@@ -158,6 +159,8 @@ void WebSocketManager::sendPumpStatusTo_(AsyncWebSocketClient* client) {
     doc["on"]       = pump_.isEnabled();
     doc["cutoff"]   = pump_.getCutoffPressureRaw();
     doc["pressure"] = pressure_.getCurrentPressureRaw();
+    doc["power"]     = pump_.getCurrentPower();
+    doc["max"]       = pump_.getMaxPower();
 
     String out;
     serializeJson(doc, out);
@@ -170,6 +173,8 @@ void WebSocketManager::broadcastPumpStatus_() {
     doc["on"]       = pump_.isEnabled();
     doc["cutoff"]   = pump_.getCutoffPressureRaw();
     doc["pressure"] = pressure_.getCurrentPressureRaw();
+    doc["power"]     = pump_.getCurrentPower();
+    doc["max"]       = pump_.getMaxPower();
 
     String out;
     serializeJson(doc, out);

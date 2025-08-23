@@ -12,12 +12,19 @@ public:
     void setup() override;
     void loop() override;
 
-    void applySettings(bool autoEnable, int cutoffRaw);
+    void applySettings(bool autoEnable, int cutoffRaw, int maxPower = 100);
+    
     bool isEnabled() const;
-    int  getCutoffPressureRaw() const;
     bool isPumpOn() const;
 
+    int  getCutoffPressureRaw() const;
+
+    uint8_t  getMaxPower() const;
+    uint8_t  getCurrentPower() const;
+
 private:
+    static constexpr uint8_t minPower = 10;
+
     IPumpAdapter& pumpAdapter_;
     PressureSensorManager& pressureSensor_;
 
@@ -25,6 +32,10 @@ private:
     bool outputOn_ = false;
     int  cutoffRaw_   = 3800;
     int  hysteresisRaw_ = 100;
+    int  controlRangeRaw_  = 800;
+
+    uint8_t  maxPower_      = 100;
+    uint8_t  currentPower_ = minPower;
 
     void writePower_(uint8_t percent);
     void writeOff_();
