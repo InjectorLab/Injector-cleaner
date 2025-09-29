@@ -78,6 +78,7 @@ void InjectorManager::stopPattern() {
     running_ = false;
     phase_ = IDLE;
     activeIndex_ = -1;
+    setAllOff_();
     bumpVersion();
 }
 

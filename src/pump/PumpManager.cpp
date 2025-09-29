@@ -33,6 +33,13 @@ void PumpManager::applySettings(bool enable, int cutoffRaw, int maxPower) {
     bumpVersion();
 }
 
+void PumpManager::setAutoEnable(bool enable) {
+    if (enable_ != enable) {
+        enable_ = enable;
+    }
+    bumpVersion();
+}
+
 bool PumpManager::isEnabled() const { return enable_; }
 int  PumpManager::getCutoffPressureRaw() const { return cutoffRaw_; }
 bool PumpManager::isPumpOn() const { return outputOn_; }

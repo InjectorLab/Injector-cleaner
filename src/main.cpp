@@ -43,7 +43,7 @@ RelayBusInjectorAdapter inj4(relayBus, 5, true);
 
 InjectorManager        injector(DEFAULT_DELAY_MS, DEFAULT_PULSE_MS);
 
-TimerManager           timer(injector);
+TimerManager           timer(injector, pump);
 WebSocketManager       websocket(pressure, pump, injector, timer);
 
 OtaManager              ota("injector");

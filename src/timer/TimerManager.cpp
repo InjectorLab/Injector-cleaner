@@ -1,7 +1,7 @@
 #include "TimerManager.h"
 
-TimerManager::TimerManager(InjectorManager& injector)
-: injector_(injector) {}
+TimerManager::TimerManager(InjectorManager& injector, PumpManager& pump)
+: injector_(injector), pump_(pump) {}
 
 void TimerManager::setup() {}
 
@@ -62,9 +62,11 @@ void TimerManager::startInjectorsInfinite_() {
                       : count;
     for (uint8_t i = 0; i < n; ++i) pattern[i] = i + 1;
 
+    pump_.setAutoEnable(true);
     injector_.startPattern(pattern, n, -1);
 }
 
 void TimerManager::stopInjectors_() {
+    pump_.setAutoEnable(false);
     injector_.stopPattern();
 }

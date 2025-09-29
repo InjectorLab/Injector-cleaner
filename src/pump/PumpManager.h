@@ -13,6 +13,7 @@ public:
     void loop(uint32_t cycleStartMillis) override;
 
     void applySettings(bool autoEnable, int cutoffRaw, int maxPower = 100);
+    void setAutoEnable(bool autoEnable);
     
     bool isEnabled() const;
     bool isPumpOn() const;

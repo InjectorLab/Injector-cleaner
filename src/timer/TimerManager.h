@@ -3,10 +3,11 @@
 #include "../common/LifeCycleHandler.h"
 #include "../common/StateVersionTracker.h"
 #include "../injector/InjectorManager.h"
+#include "../pump/PumpManager.h"
 
 class TimerManager final : public LifeCycleHandler, public StateVersionTracker  {
 public:
-    explicit TimerManager(InjectorManager& injector);
+    explicit TimerManager(InjectorManager& injector, PumpManager& pump);
 
     void setup() override;
     void loop(uint32_t cycleStartMillis) override;
@@ -18,6 +19,7 @@ public:
     uint32_t getRemainingMs() const;
 private:
     InjectorManager& injector_;
+    PumpManager& pump_;
 
     bool running_ = false;
     uint32_t startedAtMs_ = 0;
